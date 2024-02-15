@@ -32,15 +32,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.clickingsimulator.R
 import com.example.clickingsimulator.data.models.ShopItem
-import com.example.clickingsimulator.ui.navigation.NavigationDestination
 
-object HomeDestination : NavigationDestination {
-    override val route: String = "home"
-    override val titleRes: Int = R.string.app_name
-}
 
+/**
+ * the click simulator app
+ * @author Ömer Aynaci
+ * @param homeViewModel the home view model
+ */
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,7 +53,7 @@ fun ClickingSimulatorApp(
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            ProgressDemo(viewModel = homeViewModel)
+            ProgressSection(viewModel = homeViewModel)
             HomeScreen(
                 shopItemUiState = homeViewModel.shopItemUiState,
                 onClick = { shopItem ->
@@ -62,15 +61,18 @@ fun ClickingSimulatorApp(
                 },
                 onPassiveClick = {
                     homeViewModel.clickPerSecond()
-                },
-                shopItem = ShopItem(0,"",0,0)
-            )
+                })
         }
     }
 }
 
+/**
+ * component fo the progress section, so displaying the needed components
+ * @author Ömer Aynaci
+ * @param viewModel the home viewmodel
+ */
 @Composable
-fun ProgressDemo(
+fun ProgressSection(
     viewModel: HomeViewModel,
 ) {
     Column(
@@ -98,34 +100,44 @@ fun ProgressDemo(
     IncreaseProgressBar(viewModel = viewModel)
 }
 
+/**
+ * component of the home screen if nothing goes wrong it displays the home body component [HomeBody]
+ * @author Ömer Aynaci
+ * @param shopItemUiState the ui state of the shop item
+ * @param onClick click event
+ * @param onPassiveClick passive click event
+ */
 @Composable
 fun HomeScreen(
     shopItemUiState: ShopItemUiState,
     onClick: (ShopItem) -> Unit,
-    onPassiveClick: (ShopItem) -> Unit,
-    shopItem: ShopItem,
-    modifier: Modifier = Modifier
+    onPassiveClick: (ShopItem) -> Unit
 ) {
     when (shopItemUiState) {
         is ShopItemUiState.Success -> HomeBody(
             shopItemList = shopItemUiState.shopItems,
             onClick = onClick,
-            onPassiveClick = onPassiveClick,
-            shopItem = shopItem
+            onPassiveClick = onPassiveClick
         )
 
         else -> {}
     }
 }
 
+/**
+ * component for displaying the home body
+ * @author Ömer Aynaci
+ * @param shopItemList a list of shop items
+ * @param onClick click event on the card
+ * @param onPassiveClick passive click event on the card
+ * @param viewModel the home view model
+ */
 @Composable
 fun HomeBody(
     shopItemList: List<ShopItem>,
     onClick: (ShopItem) -> Unit,
     onPassiveClick: (ShopItem) -> Unit,
-    shopItem: ShopItem,
-    viewModel: HomeViewModel = viewModel(),
-    modifier: Modifier = Modifier
+    viewModel: HomeViewModel = viewModel()
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -144,6 +156,11 @@ fun HomeBody(
     }
 }
 
+/**
+ * component for increasing the progress bar
+ * @author Ömer Aynaci
+ * @param viewModel the home viewmodel
+ */
 @Composable
 fun IncreaseProgressBar(viewModel: HomeViewModel) {
     Column(
@@ -163,12 +180,18 @@ fun IncreaseProgressBar(viewModel: HomeViewModel) {
     }
 }
 
+/**
+ * component for displaying a list of shop items
+ * @author Ömer Aynaci
+ * @param shopItems a list of shop items
+ * @param onClick the click event for the shop item
+ * @param onPassiveClick the passive click event for the shop item
+ */
 @Composable
 fun ListOfShopItems(
     shopItems: List<ShopItem>,
     onClick: (ShopItem) -> Unit,
     onPassiveClick: (ShopItem) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(columns = GridCells.Fixed(1)) {
         items(shopItems) { shopItem ->
@@ -180,13 +203,19 @@ fun ListOfShopItems(
     }
 }
 
+/**
+ * component card for the shop items
+ * @author Ömer Aynaci
+ * @param shopItem the shop item properties
+ * @param onClick if click count is enough to buy an shop item then it applies to click count
+ * @param onPassiveClick per second adds to the click count
+ */
 @Composable
 fun ClickableItemCard(
     shopItem: ShopItem,
     onClick: (ShopItem) -> Unit,
     onPassiveClick: (ShopItem) -> Unit,
-    viewModel: HomeViewModel = viewModel(),
-    modifier: Modifier = Modifier
+    viewModel: HomeViewModel = viewModel()
 ) {
     Card(
         elevation = CardDefaults.cardElevation(
@@ -210,6 +239,11 @@ fun ClickableItemCard(
     }
 }
 
+/**
+ * component for the progress bar
+ * @author Ömer Aynaci
+ * @param progress showing the progress of the progress bar
+ */
 @Composable
 fun CustomProgressBar(progress: Float) {
     Canvas(
